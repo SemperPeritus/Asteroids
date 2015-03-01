@@ -64,6 +64,7 @@ public class PlayState extends GameState {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 20;
         hyperspaceBold = generator.generateFont(parameter);
+        hyperspaceBold.setColor(1, 1, 1, 1);
 
         level = 1;
         spawnAsteroids();
@@ -137,6 +138,8 @@ public class PlayState extends GameState {
 
         player.update(deltaTime);
         if (player.isDead()) {
+            if (player.getExtraLives() == 0)
+                stateManager.setState(StateManager.MENU);
             player.loseLive();
             player.reset();
             return;
@@ -188,6 +191,7 @@ public class PlayState extends GameState {
                     player.hit();
                     asteroids.remove(i);
                     splitAsteroids(asteroid);
+                    asteroid.playBang();
                     break;
                 }
             }
@@ -221,7 +225,6 @@ public class PlayState extends GameState {
         for (Particle particle : particles)
             particle.draw(shapeRenderer);
 
-        spriteBatch.setColor(1, 1, 1, 1);
         spriteBatch.begin();
 
         hyperspaceBold.draw(spriteBatch, Long.toString(player.getScore()), 16, 390);

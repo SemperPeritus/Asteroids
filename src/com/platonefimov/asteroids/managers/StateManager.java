@@ -2,6 +2,7 @@ package com.platonefimov.asteroids.managers;
 
 
 import com.platonefimov.asteroids.states.GameState;
+import com.platonefimov.asteroids.states.MenuState;
 import com.platonefimov.asteroids.states.PlayState;
 
 
@@ -14,7 +15,7 @@ public class StateManager {
 
 
     public StateManager() {
-        setState(PLAY);
+        setState(MENU);
     }
 
 
@@ -22,7 +23,7 @@ public class StateManager {
         if (gameState != null)
             gameState.dispose();
         if (state == MENU) {
-            // gameState = new MenuState(this);
+            gameState = new MenuState(this);
         }
         if (state == PLAY) {
             gameState = new PlayState(this);
