@@ -39,6 +39,12 @@ public abstract class Object {
     }
 
 
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+
     public boolean intersects(Object object) {
         float[] sectX = object.getShapeX();
         float[] sectY = object.getShapeY();

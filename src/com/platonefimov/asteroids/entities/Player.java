@@ -50,7 +50,7 @@ public class Player extends Object {
         x = Game.WIDTH / 2;
         y = Game.HEIGHT / 2;
 
-        radians = MathUtils.PI2;
+        radians = MathUtils.PI / 2;
         rotationSpeed = 3;
 
         maxSpeed = 300;
@@ -86,6 +86,11 @@ public class Player extends Object {
 
     public long getScore() {
         return score;
+    }
+
+    public void setPosition(float x, float y) {
+        super.setPosition(x, y);
+        setShape();
     }
 
     public int getExtraLives() {

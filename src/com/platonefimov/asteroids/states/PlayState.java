@@ -28,6 +28,7 @@ public class PlayState extends GameState {
     private BitmapFont hyperspaceBold;
 
     private Player player;
+    private Player hudPlayer;
     private ArrayList<Bullet> bullets;
     private ArrayList<Asteroid> asteroids;
     private ArrayList<Particle> particles;
@@ -44,8 +45,11 @@ public class PlayState extends GameState {
     public void init() {
         shapeRenderer = new ShapeRenderer();
         spriteBatch = new SpriteBatch();
+
         bullets = new ArrayList<Bullet>();
         player = new Player(bullets);
+        hudPlayer = new Player(null);
+
         asteroids = new ArrayList<Asteroid>();
         particles = new ArrayList<Particle>();
 
@@ -203,6 +207,11 @@ public class PlayState extends GameState {
         hyperspaceBold.draw(spriteBatch, Long.toString(player.getScore()), 16, 390);
 
         spriteBatch.end();
+
+        for (int i = 0; i < player.getExtraLives(); i++) {
+            hudPlayer.setPosition(16 + i * 10, 360);
+            hudPlayer.draw(shapeRenderer);
+        }
     }
 
 
