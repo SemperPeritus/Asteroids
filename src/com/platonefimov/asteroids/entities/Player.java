@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
 import com.platonefimov.asteroids.Game;
+import com.platonefimov.asteroids.managers.Jukebox;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -111,6 +112,11 @@ public class Player extends Object {
 
 
     public void setUp(boolean bool) {
+        if (bool && !up && !hit)
+            Jukebox.loop("thrust");
+        else if (!bool)
+            Jukebox.stop("thrust");
+
         up = bool;
     }
 
@@ -145,12 +151,15 @@ public class Player extends Object {
         if (bullets.size() == MAX_BULLETS)
             return;
         bullets.add(new Bullet(x, y, radians));
+        Jukebox.play("fire");
     }
 
 
     public void hit() {
         if (hit)
             return;
+
+        Jukebox.stop("thrust");
 
         hit = true;
         deltaX = deltaY = 0;
@@ -194,6 +203,7 @@ public class Player extends Object {
         if (score >= requiredScore) {
             extraLives++;
             requiredScore += 10000;
+            Jukebox.play("extraShip");
         }
 
         if (left)

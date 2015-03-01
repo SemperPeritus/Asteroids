@@ -3,6 +3,7 @@ package com.platonefimov.asteroids.entities;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.platonefimov.asteroids.managers.Jukebox;
 
 public class Asteroid extends Object {
 
@@ -23,6 +24,8 @@ public class Asteroid extends Object {
         this.x = x;
         this.y = y;
         this.type = type;
+
+        remove = false;
 
         if (type == SMALL) {
             numPoints = 8;
@@ -80,6 +83,16 @@ public class Asteroid extends Object {
 
     public int getScore() {
         return score;
+    }
+
+
+    public void playBang() {
+        if (type == Asteroid.LARGE)
+            Jukebox.play("bangLarge");
+        if (type == Asteroid.MEDIUM)
+            Jukebox.play("bangMedium");
+        if (type == Asteroid.SMALL)
+            Jukebox.play("bangSmall");
     }
 
 

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import com.platonefimov.asteroids.managers.GameKeys;
 import com.platonefimov.asteroids.managers.InputProcessor;
+import com.platonefimov.asteroids.managers.Jukebox;
 import com.platonefimov.asteroids.managers.StateManager;
 
 
@@ -30,6 +31,8 @@ public class Game implements ApplicationListener {
         camera.update();
 
         Gdx.input.setInputProcessor(new InputProcessor());
+
+        Jukebox.init();
 
         stateManager = new StateManager();
     }

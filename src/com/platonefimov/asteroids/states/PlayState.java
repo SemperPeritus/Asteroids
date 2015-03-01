@@ -14,6 +14,7 @@ import com.platonefimov.asteroids.entities.Bullet;
 import com.platonefimov.asteroids.entities.Particle;
 import com.platonefimov.asteroids.entities.Player;
 import com.platonefimov.asteroids.managers.GameKeys;
+import com.platonefimov.asteroids.managers.Jukebox;
 import com.platonefimov.asteroids.managers.StateManager;
 
 import java.util.ArrayList;
@@ -36,6 +37,12 @@ public class PlayState extends GameState {
     private int level;
     private int totalAsteroids;
     private int asteroidsLeft;
+
+    private float maxDelay;
+    private float minDelay;
+    private float currentDelay;
+    private float musicTimer;
+    private boolean isLowPulse;
 
 
     public PlayState(StateManager stateManager) {
@@ -60,12 +67,10 @@ public class PlayState extends GameState {
 
         level = 1;
         spawnAsteroids();
-    }
 
-
-    private void createParticle(float x, float y, int num) {
-        for(int i = 0; i < num; i++)
-            particles.add(new Particle(x, y));
+        maxDelay = currentDelay = musicTimer = 1f;
+        minDelay = 0.25f;
+        isLowPulse = true;
     }
 
 
@@ -80,6 +85,8 @@ public class PlayState extends GameState {
 
         int numToSpawn = 4 + level - 1;
         asteroidsLeft = totalAsteroids = numToSpawn * 7;
+
+        currentDelay = maxDelay;
 
         for (int i = 0; i < numToSpawn; i++) {
             float x = MathUtils.random(Game.WIDTH);
@@ -115,6 +122,8 @@ public class PlayState extends GameState {
         }
         else
             createParticle(asteroid.getX(), asteroid.getY(), 8, 0.1f, 0.2f);
+
+        currentDelay = ((maxDelay - minDelay) * asteroidsLeft / totalAsteroids) + minDelay;
     }
 
 
@@ -158,6 +167,16 @@ public class PlayState extends GameState {
                 i--;
             }
         }
+
+        musicTimer += deltaTime;
+        if (!player.isHit() && musicTimer >= currentDelay) {
+            if (isLowPulse)
+                Jukebox.play("beat1");
+            else
+                Jukebox.play("beat2");
+            isLowPulse = !isLowPulse;
+            musicTimer = 0f;
+        }
     }
 
 
@@ -184,6 +203,7 @@ public class PlayState extends GameState {
                     asteroids.remove(j);
                     splitAsteroids(asteroid);
                     player.incrementScore(asteroid.getScore());
+                    asteroid.playBang();
                     break;
                 }
             }
