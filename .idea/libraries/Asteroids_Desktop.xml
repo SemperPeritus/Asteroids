@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Asteroids-Desktop">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/Asteroids-Desktop/libs" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/Asteroids-Desktop/libs" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/Asteroids-Desktop/libs" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/Asteroids-Desktop/libs" recursive="false" type="SOURCES" />
+  </library>
+</component>
