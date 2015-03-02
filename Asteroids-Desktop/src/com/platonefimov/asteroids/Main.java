@@ -8,6 +8,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class Main {
 
     public static void main(String[] args) {
+        // Will be fix in the future
         System.setProperty("user.name", "Platon");
 
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
