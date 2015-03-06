@@ -5,8 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
 import com.platonefimov.asteroids.Game;
 import com.platonefimov.asteroids.managers.GameKeys;
+import com.platonefimov.asteroids.managers.SaveData;
 import com.platonefimov.asteroids.managers.StateManager;
 
 
@@ -35,6 +37,8 @@ public class MenuState extends GameState {
         parameter.size = 24;
         hyperspace = generator.generateFont(parameter);
         hyperspace.setColor(1, 1, 1, 1);
+
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Hyperspace Bold.ttf"));
         parameter.size = 56;
         hyperspaceBold = generator.generateFont(parameter);
         hyperspaceBold.setColor(1, 1, 1, 1);
@@ -44,6 +48,8 @@ public class MenuState extends GameState {
                 "Highscores",
                 "Quit"
         };
+
+        SaveData.load();
     }
 
 
@@ -86,13 +92,19 @@ public class MenuState extends GameState {
     private void select() {
         if (currentItem == 0)
             stateManager.setState(StateManager.PLAY);
+        if (currentItem == 1)
+            stateManager.setState(StateManager.HIGHSCORES);
         if (currentItem == 2)
             Gdx.app.exit();
     }
 
 
     public void dispose() {
+        super.dispose();
 
+        spriteBatch.dispose();
+        hyperspace.dispose();
+        hyperspaceBold.dispose();
     }
 
 }

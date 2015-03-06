@@ -1,6 +1,7 @@
 package com.platonefimov.asteroids.states;
 
 
+import com.platonefimov.asteroids.managers.Jukebox;
 import com.platonefimov.asteroids.managers.StateManager;
 
 
@@ -18,6 +19,10 @@ public abstract class GameState {
     public abstract void update(float deltaTime);
     public abstract void draw();
     public abstract void handleInput();
-    public abstract void dispose();
+
+
+    public void dispose() {
+        Jukebox.stopAll();
+    }
 
 }

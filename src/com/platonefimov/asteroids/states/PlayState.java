@@ -15,6 +15,7 @@ import com.platonefimov.asteroids.entities.Particle;
 import com.platonefimov.asteroids.entities.Player;
 import com.platonefimov.asteroids.managers.GameKeys;
 import com.platonefimov.asteroids.managers.Jukebox;
+import com.platonefimov.asteroids.managers.SaveData;
 import com.platonefimov.asteroids.managers.StateManager;
 
 import java.util.ArrayList;
@@ -138,8 +139,11 @@ public class PlayState extends GameState {
 
         player.update(deltaTime);
         if (player.isDead()) {
-            if (player.getExtraLives() == 0)
-                stateManager.setState(StateManager.MENU);
+            if (player.getExtraLives() == 0) {
+                SaveData.highscoresData.setTentativeScore(player.getScore());
+                stateManager.setState(StateManager.GAME_OVER);
+                return;
+            }
             player.loseLive();
             player.reset();
             return;
@@ -216,6 +220,9 @@ public class PlayState extends GameState {
 
 
     public void draw() {
+        shapeRenderer.setProjectionMatrix(Game.camera.combined);
+        spriteBatch.setProjectionMatrix(Game.camera.combined);
+
         player.draw(shapeRenderer);
 
         for (Bullet bullet : bullets)
@@ -239,16 +246,22 @@ public class PlayState extends GameState {
 
 
     public void handleInput() {
-        player.setUp(GameKeys.isDown(GameKeys.UP));
-        player.setLeft(GameKeys.isDown(GameKeys.LEFT));
-        player.setRight(GameKeys.isDown(GameKeys.RIGHT));
+        if (!player.isHit()) {
+            player.setUp(GameKeys.isDown(GameKeys.UP));
+            player.setLeft(GameKeys.isDown(GameKeys.LEFT));
+            player.setRight(GameKeys.isDown(GameKeys.RIGHT));
 
-        if (GameKeys.isPressed(GameKeys.SPACE) && !player.isHit())
-            player.shoot();
+            if (GameKeys.isPressed(GameKeys.SPACE))
+                player.shoot();
+        }
     }
 
     public void dispose() {
+        super.dispose();
 
+        shapeRenderer.dispose();
+        spriteBatch.dispose();
+        hyperspaceBold.dispose();
     }
 
 }

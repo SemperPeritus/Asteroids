@@ -1,9 +1,7 @@
 package com.platonefimov.asteroids.managers;
 
 
-import com.platonefimov.asteroids.states.GameState;
-import com.platonefimov.asteroids.states.MenuState;
-import com.platonefimov.asteroids.states.PlayState;
+import com.platonefimov.asteroids.states.*;
 
 
 public class StateManager {
@@ -12,6 +10,9 @@ public class StateManager {
 
     public static final int MENU = 0;
     public static final int PLAY = 1;
+    public static final int HIGHSCORES = 2;
+    //public static final int PAUSE = 10;
+    public static final int GAME_OVER = 11;
 
 
     public StateManager() {
@@ -22,12 +23,15 @@ public class StateManager {
     public void setState(int state) {
         if (gameState != null)
             gameState.dispose();
-        if (state == MENU) {
+
+        if (state == MENU)
             gameState = new MenuState(this);
-        }
-        if (state == PLAY) {
+        if (state == PLAY)
             gameState = new PlayState(this);
-        }
+        if (state == HIGHSCORES)
+            gameState = new HighScoresState(this);
+        if (state == GAME_OVER)
+            gameState = new GameOverState(this);
     }
 
 
