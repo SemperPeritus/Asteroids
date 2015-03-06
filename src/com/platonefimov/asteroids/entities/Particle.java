@@ -14,19 +14,6 @@ public class Particle extends Object {
     private float green;
 
 
-    public Particle(float x, float y) {
-        this.x = x;
-        this.y = y;
-        width = height = 2;
-        green = 0f;
-        speed = 50;
-        lifetime = 1f;
-
-        radians = MathUtils.random(6,2832f);
-        deltaX = MathUtils.cos(radians) * speed;
-        deltaY = MathUtils.sin(radians) * speed;
-    }
-
     public Particle(float x, float y, float green) {
         this.x = x;
         this.y = y;

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.platonefimov.asteroids.Game;
 import com.platonefimov.asteroids.managers.GameKeys;
 import com.platonefimov.asteroids.managers.SaveData;
