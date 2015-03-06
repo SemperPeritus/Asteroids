@@ -246,7 +246,6 @@ public class Player extends Object {
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(1, 1, 1, 1);
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         if (hit) {

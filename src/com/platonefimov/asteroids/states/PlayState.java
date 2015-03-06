@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
 import com.platonefimov.asteroids.Game;
-import com.platonefimov.asteroids.entities.Asteroid;
-import com.platonefimov.asteroids.entities.Bullet;
-import com.platonefimov.asteroids.entities.Particle;
-import com.platonefimov.asteroids.entities.Player;
+import com.platonefimov.asteroids.entities.*;
 import com.platonefimov.asteroids.managers.GameKeys;
 import com.platonefimov.asteroids.managers.Jukebox;
 import com.platonefimov.asteroids.managers.SaveData;
@@ -32,8 +29,14 @@ public class PlayState extends GameState {
     private Player player;
     private Player hudPlayer;
     private ArrayList<Bullet> bullets;
+
     private ArrayList<Asteroid> asteroids;
     private ArrayList<Particle> particles;
+
+    private Saucer saucer;
+    private ArrayList<Bullet> enemyBullets;
+    private float saucerTime;
+    private float saucerTimer;
 
     private int level;
     private int totalAsteroids;
@@ -55,11 +58,15 @@ public class PlayState extends GameState {
         spriteBatch = new SpriteBatch();
 
         bullets = new ArrayList<Bullet>();
+        enemyBullets = new ArrayList<Bullet>();
         player = new Player(bullets);
         hudPlayer = new Player(null);
 
         asteroids = new ArrayList<Asteroid>();
         particles = new ArrayList<Particle>();
+
+        saucerTime = 15;
+        saucerTimer = 0;
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Hyperspace Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -129,6 +136,24 @@ public class PlayState extends GameState {
     }
 
 
+    public void playerHit() {
+        player.hit();
+        createParticle(player.getX(), player.getY(), 30, 0.5f, 0.2f);
+    }
+
+    public void saucerLeft() {
+        saucer = null;
+        Jukebox.stop("saucerLarge");
+        Jukebox.stop("saucerSmall");
+    }
+
+    public void saucerHit() {
+        createParticle(saucer.getX(), saucer.getY(), 20, 0.3f, 0.15f);
+        Jukebox.play("bangLarge");
+        saucerLeft();
+    }
+
+
     public void update(float deltaTime) {
         handleInput();
 
@@ -146,6 +171,7 @@ public class PlayState extends GameState {
             }
             player.loseLive();
             player.reset();
+            saucerLeft();
             return;
         }
 
@@ -153,6 +179,14 @@ public class PlayState extends GameState {
             bullets.get(i).update(deltaTime);
             if (bullets.get(i).shouldRemove()) {
                 bullets.remove(i);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < enemyBullets.size(); i++) {
+            enemyBullets.get(i).update(deltaTime);
+            if (enemyBullets.get(i).shouldRemove()) {
+                enemyBullets.remove(i);
                 i--;
             }
         }
@@ -175,6 +209,21 @@ public class PlayState extends GameState {
             }
         }
 
+        if (saucer == null) {
+            saucerTimer += deltaTime;
+            if (saucerTimer > saucerTime) {
+                saucerTimer = 0;
+                int type = MathUtils.random() < 0.5 ? Saucer.SMALL : Saucer.LARGE;
+                int direction = MathUtils.random() < 0.5 ? Saucer.RIGHT : Saucer.LEFT;
+                saucer = new Saucer(type, direction, player, enemyBullets);
+            }
+        }
+        else {
+            saucer.update(deltaTime);
+            if (saucer.shouldRemove())
+                saucerLeft();
+        }
+
         musicTimer += deltaTime;
         if (!player.isHit() && musicTimer >= currentDelay) {
             if (isLowPulse)
@@ -192,7 +241,7 @@ public class PlayState extends GameState {
             for (int i = 0; i < asteroids.size(); i++) {
                 Asteroid asteroid = asteroids.get(i);
                 if (asteroid.intersects(player)) {
-                    player.hit();
+                    playerHit();
                     asteroids.remove(i);
                     splitAsteroids(asteroid);
                     asteroid.playBang();
@@ -216,6 +265,62 @@ public class PlayState extends GameState {
                 }
             }
         }
+
+        for (int i = 0; i < enemyBullets.size(); i++) {
+            Bullet bullet = enemyBullets.get(i);
+            for (int j = 0; j < asteroids.size(); j++) {
+                Asteroid asteroid = asteroids.get(j);
+                if (asteroid.contains(bullet.getX(), bullet.getY())) {
+                    bullets.remove(i);
+                    i--;
+                    asteroids.remove(j);
+                    splitAsteroids(asteroid);
+                    asteroid.playBang();
+                    break;
+                }
+            }
+        }
+
+        if (saucer != null)
+            if (player.intersects(saucer)) {
+                playerHit();
+                saucerHit();
+            }
+
+
+        if (saucer != null)
+            for (int i = 0; i < bullets.size(); i++) {
+                Bullet bullet = bullets.get(i);
+                if (saucer.contains(bullet.getX(), bullet.getY())) {
+                    bullets.remove(i);
+                    player.incrementScore(saucer.getScore());
+                    saucerHit();
+                    break;
+                }
+            }
+
+        if (saucer != null)
+            for (int i = 0; i < asteroids.size(); i++) {
+                Asteroid asteroid = asteroids.get(i);
+                if (asteroid.intersects(saucer)) {
+                    saucerHit();
+                    asteroids.remove(i);
+                    splitAsteroids(asteroid);
+                    asteroid.playBang();
+                    break;
+                }
+            }
+
+        if (!player.isHit()) {
+            for (int i = 0; i < enemyBullets.size(); i++) {
+                Bullet bullet = enemyBullets.get(i);
+                if (player.contains(bullet.getX(), bullet.getY())) {
+                    playerHit();
+                    enemyBullets.remove(i);
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -227,10 +332,15 @@ public class PlayState extends GameState {
 
         for (Bullet bullet : bullets)
             bullet.draw(shapeRenderer);
+        for (Bullet enemyBullet : enemyBullets)
+            enemyBullet.draw(shapeRenderer);
         for (Asteroid asteroid : asteroids)
             asteroid.draw(shapeRenderer);
         for (Particle particle : particles)
             particle.draw(shapeRenderer);
+
+        if (saucer != null)
+            saucer.draw(shapeRenderer);
 
         spriteBatch.begin();
 

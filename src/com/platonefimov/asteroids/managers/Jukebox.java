@@ -26,7 +26,7 @@ public class Jukebox {
         load("beat2.wav", "beat2");
         load("extraShip.wav", "extraShip");
         load("fire.wav", "fire");
-        load("saucerBig.wav", "saucerBig");
+        load("saucerLarge.wav", "saucerLarge");
         load("saucerSmall.wav", "saucerSmall");
         load("thrust.wav", "thrust");
     }

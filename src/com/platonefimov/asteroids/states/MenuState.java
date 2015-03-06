@@ -6,22 +6,31 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+
 import com.platonefimov.asteroids.Game;
+import com.platonefimov.asteroids.entities.Asteroid;
 import com.platonefimov.asteroids.managers.GameKeys;
 import com.platonefimov.asteroids.managers.SaveData;
 import com.platonefimov.asteroids.managers.StateManager;
+
+import java.util.ArrayList;
 
 
 
 public class MenuState extends GameState {
 
     private SpriteBatch spriteBatch;
+    private ShapeRenderer shapeRenderer;
 
     private BitmapFont hyperspace;
     private BitmapFont hyperspaceBold;
 
     private int currentItem;
     private String[] menuItems;
+
+    private ArrayList<Asteroid> asteroids;
 
 
     public MenuState(StateManager stateManager) {
@@ -31,6 +40,7 @@ public class MenuState extends GameState {
 
     public void init() {
         spriteBatch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Hyperspace.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -50,15 +60,26 @@ public class MenuState extends GameState {
         };
 
         SaveData.load();
+
+        asteroids = new ArrayList<Asteroid>();
+        for (int i = 0; i < 6; i++)
+            asteroids.add(new Asteroid(MathUtils.random(Game.WIDTH), MathUtils.random(Game.HEIGHT), Asteroid.LARGE));
     }
 
 
     public void update(float deltaTime) {
         handleInput();
+
+        for (Asteroid asteroid : asteroids)
+            asteroid.update(deltaTime);
     }
 
 
     public void draw() {
+        shapeRenderer.setProjectionMatrix(Game.camera.combined);
+        for (Asteroid asteroid : asteroids)
+            asteroid.draw(shapeRenderer);
+
         spriteBatch.setProjectionMatrix(Game.camera.combined);
         spriteBatch.begin();
 
@@ -103,6 +124,7 @@ public class MenuState extends GameState {
         super.dispose();
 
         spriteBatch.dispose();
+        shapeRenderer.dispose();
         hyperspace.dispose();
         hyperspaceBold.dispose();
     }

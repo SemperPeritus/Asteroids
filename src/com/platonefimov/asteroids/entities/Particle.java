@@ -58,7 +58,6 @@ public class Particle extends Object {
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(1, green, 0, 1);
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         shapeRenderer.circle(x - width / 2, y - width / 2, width / 4);

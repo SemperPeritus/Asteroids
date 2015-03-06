@@ -48,7 +48,6 @@ public class Bullet extends Object {
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(0, 1, 0, 1);
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         shapeRenderer.circle(x - width / 2, y - height / 2, width / 2);

@@ -109,7 +109,6 @@ public class Asteroid extends Object {
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(1, 1, 1, 1);
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         for (int i = 0, j = shapeX.length - 1; i < shapeX.length; j = i++)
