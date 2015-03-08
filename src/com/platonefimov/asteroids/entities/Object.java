@@ -54,6 +54,15 @@ public abstract class Object {
         return false;
     }
 
+    /*public boolean lineIntersects(Object object) {
+        float[] sectX = object.getShapeX();
+        float[] sectY = object.getShapeY();
+        for (int i = 0; i < sectX.length; i++) {
+            float denominator = ((sectX[i] - x) * (shapeY[i]));
+        }
+        return false;
+    }*/
+
 
     public boolean contains(float x, float y) {
         boolean bool = false;
